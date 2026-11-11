@@ -1,35 +1,32 @@
 #!/bin/bash
 
-CONFIG=/data/options.json
+CONFIG="/data/options.json"
 
 CONTAINER=$(jq -r '.container' "$CONFIG")
 SYSLOG_HOST=$(jq -r '.syslog_host' "$CONFIG")
 SYSLOG_PORT=$(jq -r '.syslog_port' "$CONFIG")
 PROTOCOL=$(jq -r '.protocol' "$CONFIG")
+TAG=$(jq -r '.tag' "$CONFIG")
+RECONNECT_DELAY=$(jq -r '.reconnect_delay' "$CONFIG")
 
-echo "Starting forwarder"
+echo "Starting Vaultwarden Syslog Forwarder"
 echo "Container: $CONTAINER"
 echo "Syslog: $SYSLOG_HOST:$SYSLOG_PORT"
-
-SEND() {
-    local line="$1"
-
-    if [ "$PROTOCOL" = "udp" ]; then
-        echo "<13>docker-vaultwarden: $line" \
-          | nc -u -w1 "$SYSLOG_HOST" "$SYSLOG_PORT"
-    else
-        echo "<13>docker-vaultwarden: $line" \
-          | nc -w1 "$SYSLOG_HOST" "$SYSLOG_PORT"
-    fi
-}
+echo "Protocol: $PROTOCOL"
 
 while true
 do
     docker logs -f "$CONTAINER" 2>&1 | while read -r line
     do
-        SEND "$line"
+        if [ "$PROTOCOL" = "udp" ]; then
+            echo "<13>${TAG}: $line" \
+                | nc -u -w1 "$SYSLOG_HOST" "$SYSLOG_PORT"
+        else
+            echo "<13>${TAG}: $line" \
+                | nc -w1 "$SYSLOG_HOST" "$SYSLOG_PORT"
+        fi
     done
 
-    echo "Container stream closed. Reconnecting in 5s..."
-    sleep 5
+    echo "Log stream disconnected. Reconnecting in ${RECONNECT_DELAY}s..."
+    sleep "$RECONNECT_DELAY"
 done
