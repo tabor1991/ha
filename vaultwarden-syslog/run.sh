@@ -16,7 +16,7 @@ echo "Protocol: $PROTOCOL"
 
 while true
 do
-    docker logs -f "$CONTAINER" 2>&1 | while read -r line
+    docker logs --since=5s -f "$CONTAINER" 2>&1 | while read -r line
     do
         if [ "$PROTOCOL" = "udp" ]; then
             echo "<13>${TAG}: $line" \
