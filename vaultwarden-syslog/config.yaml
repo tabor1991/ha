@@ -1,14 +1,13 @@
 name: Vaultwarden Syslog Forwarder
-version: "1.0.0"
-slug: vaultwarden_syslog
-
+slug: vaultwarden-syslog
 description: Forward Vaultwarden logs to remote syslog
-
-startup: application
-boot: auto
+version: "1.0.0"
 
 arch:
   - amd64
+
+startup: services
+boot: auto
 
 docker_api: true
 
@@ -17,6 +16,7 @@ options:
   syslog_host: 192.168.0.164
   syslog_port: 514
   protocol: udp
+  tag: docker-vaultwarden
   reconnect_delay: 5
 
 schema:
@@ -24,4 +24,5 @@ schema:
   syslog_host: str
   syslog_port: port
   protocol: list(udp|tcp)
+  tag: str
   reconnect_delay: int
