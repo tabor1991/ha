@@ -17,9 +17,11 @@ options:
   syslog_host: 192.168.0.164
   syslog_port: 514
   protocol: udp
+  reconnect_delay: 5
 
 schema:
   container: str
   syslog_host: str
   syslog_port: port
   protocol: list(udp|tcp)
+  reconnect_delay: int
