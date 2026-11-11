@@ -1,7 +1,7 @@
 name: Vaultwarden Syslog Forwarder
 slug: vaultwarden-syslog
 description: Forward Vaultwarden logs to remote syslog
-version: "1.0.1"
+version: "1.0.2"
 
 arch:
   - amd64
@@ -15,7 +15,7 @@ options:
   container: app_a0d7b954_bitwarden
   syslog_host: 192.168.0.164
   syslog_port: 514
-  protocol: tcp
+  protocol: udp
   tag: docker-vaultwarden
   reconnect_delay: 5
 
