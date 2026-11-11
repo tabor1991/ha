@@ -1,10 +1,11 @@
-FROM alpine:3.22
+ARG BUILD_FROM=alpine:3.22
+FROM ${BUILD_FROM}
 
 RUN apk add --no-cache \
     bash \
     docker-cli \
-    netcat-openbsd \
-    jq
+    jq \
+    netcat-openbsd
 
 COPY run.sh /run.sh
 
